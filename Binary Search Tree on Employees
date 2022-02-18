@@ -1,0 +1,145 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define MALLOC(p,s)\
+        if(!(p=malloc(s)))\
+        {\
+          printf("Insufficient Memory\n");\
+          exit(0);\
+        }  
+struct node
+{
+   struct node *llink;
+   char name[20];
+   char id[20];
+   float sal;
+   struct node *rlink;
+};
+typedef struct node ep;
+void inorder(ep *r) 
+{
+   if(r)
+   {
+      inorder(r->llink);
+      printf("%s %s %f\n",r->name,r->id,r->sal);
+      inorder(r->rlink);
+   }
+}
+ep *insert(ep *root,ep *t)
+{
+   ep *cur=root,*prev=0;
+   if(!cur)
+      return t;
+   while(cur)
+   {
+      if(!strcmp(t->name,cur->name))
+      {
+         printf("Reduepancy\n");
+         free(t);
+         return root;
+      }
+      prev=cur;
+      if(strcmp(t->name,cur->name)<1)
+         cur=cur->llink;
+      else
+         cur=cur->rlink;
+   }
+   if(strcmp(t->name,prev->name)<1)
+      prev->llink=t;
+   else
+      prev->rlink=t;
+   return root;
+}
+void iterSearch(ep *root)
+{
+   if(!root)
+   {
+      printf("BST empty\n");
+      return;
+   }
+   char name[20];
+   printf("Enter the name to searched = ");
+   scanf("%s",name);
+   while(root)
+   {
+      if(!strcmp(name,root->name))
+      {
+         printf("Search successful\n"); 
+         return;
+      }
+      if(strcmp(name,root->name)<1)
+          root=root->llink;
+      else
+          root=root->rlink;
+   }
+   printf("Unsuccessful search\n");
+}
+void recurSearch(ep *root,char name[])
+{
+   if(!root)
+   {
+     printf("Unsuccessful search\n"); 
+     return;
+   }
+   if(!strcmp(name,root->name))
+   {
+      printf("Successful search\n");
+      return;
+   }
+   if(strcmp(name,root->name)<1)
+      return recurSearch(root->llink,name);
+   return recurSearch(root->rlink,name);
+}
+int main()
+{
+   ep *root=0;
+   int ch,i;
+   FILE *fp;
+   fp=fopen("data2","r");
+   if(fp==0)
+   {
+      printf("File Open Unsuccessfull!\n");
+      exit(0);
+   }
+   for(;;)
+   {
+       printf("\n1. Insert\n2. Iterative Search\n3. Recursive Search\n");
+       printf("4. Inorder\n5. Delete a node\n6. Exit\n");
+       printf("Enter choice = ");
+       scanf("%d",&ch);
+       switch(ch)
+       {
+           case 1: fscanf(fp,"%d",&ch);
+                   for(i=0;i<ch;i++)
+                   {
+                      ep *t;
+                      MALLOC(t,sizeof(ep));
+                      fscanf(fp,"%s%s%f",t->name,t->id,&(t->sal));
+                      t->llink=t->rlink=0;
+                      root=insert(root,t);
+                   }
+                   break;
+           case 2: iterSearch(root);
+                   break;
+           case 3: printf("Enter the name to searched = ");
+                   char name[20];
+                   scanf("%s",name);
+                   recurSearch(root,name);
+                   break;
+           case 4: inorder(root);
+                   break;
+           case 5: printf("Enter information to be deleted\n");
+                   scanf("%d",&ch);
+                   //root = deletenode(root, ch);
+                   break;
+           case 6: return 0;
+       }
+  }
+}
+
+/*
+3
+Liki 1RN20CS075 4000
+Madhu 1RN20CS078 4000
+Amit 1RN20CS036 4000
+*/
