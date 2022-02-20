@@ -80,6 +80,69 @@ void recurSearch(nd *root,int key)
       return recurSearch(root->llink,key);
    return recurSearch(root->rlink,key);
 }
+void preorder(nd *r)
+{
+   if(r)
+   {
+      printf("%d ",r->info);
+      preorder(r->llink);
+      preorder(r->rlink);
+   }
+}
+void postorder(nd *r)
+{
+   if(r)
+   {
+      postorder(r->llink);
+      postorder(r->rlink);
+      printf("%d ",r->info);
+   }
+}
+nd *deletenode(nd *root,int key)
+{
+   nd *cur,*parent,*q,*suc;
+   parent=0;
+   cur=root;
+   while(cur)
+   {
+      if(key == cur->info)
+      { 
+         printf("Successful search\n");
+         break;
+      }
+      parent=cur;
+      if(key < cur->info)
+         cur=cur->llink;
+      else
+         cur=cur->rlink;
+   }
+   if(!cur)
+   { 
+      printf("Key not found\n");
+      return root;
+   }
+   if(!cur->llink)
+      q=cur->rlink;
+   else if(!cur->rlink)
+      q=cur->llink;
+   else
+   {
+     suc = cur->rlink;
+     while(suc->llink)
+        suc=suc->llink;
+     suc->llink=cur->llink;
+     q=cur->rlink;
+   }
+   if(!parent) 
+      return q;
+
+   if(cur == parent->llink)
+      parent->llink = q;
+   else
+      parent->rlink = q;
+   free(cur);
+   return root;
+}
 int main()
 {
    nd *root=0;
@@ -93,8 +156,8 @@ int main()
    }
    for(;;)
    {
-       printf("\n1. Insert\n2. Iterative Search\n3. Recursive Search\n");
-       printf("4. Inorder\n5. Delete a node\n6. Exit\n");
+       printf("1. Insert\n2. Iterative Search\n3. Recursive Search\n");
+       printf("4. Delete a node\n5. Inorder\n6. Preorder\n7. Postorder\n8. Exit\n");
        printf("Enter choice = ");
        scanf("%d",&ch);
        switch(ch)
@@ -114,13 +177,20 @@ int main()
                    scanf("%d",&key);
                    recurSearch(root,key);
                    break;
-           case 4: inorder(root);
-                   break;
-           case 5: printf("Enter information to be deleted\n");
+          case 4: printf("Enter information to be deleted = ");
                    scanf("%d",&ch);
-                   //root = deletenode(root, ch);
+                   root = deletenode(root,ch);
                    break;
-           case 6: return 0;
+           case 5: inorder(root);
+                   printf("\n");
+                   break;
+           case 6: preorder(root);
+                   printf("\n");
+                   break;
+           case 7: postorder(root);
+                   printf("\n");
+                   break;
+           case 8: return 0;
        }
   }
 }
