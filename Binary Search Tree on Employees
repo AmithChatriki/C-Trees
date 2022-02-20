@@ -90,6 +90,51 @@ void recurSearch(ep *root,char name[])
       return recurSearch(root->llink,name);
    return recurSearch(root->rlink,name);
 }
+ep *deletenode(ep *root,char name[])
+{
+   ep *cur,*parent,*q,*suc;
+   parent=0;
+   cur=root;
+   while(cur)
+   {
+      if(!strcmp(name,cur->name))
+      { 
+         printf("Employee has been Successfully Deleted\n");
+         break;
+      }
+      parent=cur;
+      if(strcmp(name,cur->name)<1)
+         cur=cur->llink;
+      else
+         cur=cur->rlink;
+   }
+   if(!cur)
+   { 
+      printf("Employee not found.\nTry searching again!\n");
+      return root;
+   }
+   if(!cur->llink)
+      q=cur->rlink;
+   else if(!cur->rlink)
+      q=cur->llink;
+   else
+   {
+     suc = cur->rlink;
+     while(suc->llink)
+        suc=suc->llink;
+     suc->llink=cur->llink;
+     q=cur->rlink;
+   }
+   if(!parent) 
+      return q;
+
+   if(cur == parent->llink)
+      parent->llink = q;
+   else
+      parent->rlink = q;
+   free(cur);
+   return root;
+}
 int main()
 {
    ep *root=0;
@@ -128,9 +173,9 @@ int main()
                    break;
            case 4: inorder(root);
                    break;
-           case 5: printf("Enter information to be deleted\n");
-                   scanf("%d",&ch);
-                   //root = deletenode(root, ch);
+           case 5: printf("Enter the name to deleted = ");
+                   scanf("%s",name);
+                   root = deletenode(root,name);
                    break;
            case 6: return 0;
        }
