@@ -2,10 +2,10 @@
 #include<stdlib.h>
 #include<ctype.h>
 #define MALLOC(p,s)\
-        if((!p=malloc(s)))\
+        if(!(p=malloc(s)))\
         {\
-            printf("Malloc Unsuccessfull\n");\
-            exit(0);\
+          printf("Insufficient Memory\n");\
+          exit(0);\
         }
 struct node
 {
